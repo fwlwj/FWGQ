@@ -1,0 +1,1 @@
+2013年03月23日 02时21分02秒 [ ERROR ] 非法运行install.php，如果需要重新安装，请删除 根目录/config/installed.log 
