@@ -23,12 +23,14 @@
 					echo "<tr class=\"text-error\"><td><span class=\"label label-important\">错误</span>&nbsp$echo</td></tr>";
 				}	
 			}
+			/*
 			if ($connect){
 				echo '<tr class="text-success"><td><span class="label label-success">正常</span>&nbsp成功连接腾讯QQ接口</td></tr>';
 			}
 			else{
 				echo '<tr class="text-error"><td><span class="label label-important">错误</span>&nbsp无法连接腾讯QQ接口</td></tr>';
 			}
+			*/
 			if (!$next){
 				echo '<tr class="text-error"><td>你需要解决以上标示为&nbsp<span class="label label-important">错误</span>&nbsp的项目才能继续安装</td></tr>';
 			}

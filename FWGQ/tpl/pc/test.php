@@ -13,7 +13,7 @@
 	});
 	</script>
 </head>	
-<body style="height:1000px;">
+<body>
 	<header class="nav-wrapper" id="nav">
 		<span class="Nav-Logo"><img src="http://www.daqianduan.com/wp-content/themes/d-simple/img/logo.png" /></span>
 		<ul class="FW-Nav clearfix">

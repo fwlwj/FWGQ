@@ -13,7 +13,7 @@
 	});
 	</script>
 </head>	
-<body style="height:1000px;">
+<body>
 	<?php require dirname(__FILE__).'/nav.php';?>
 	<section class="container-fluid">
 		<div class="row-fluid">

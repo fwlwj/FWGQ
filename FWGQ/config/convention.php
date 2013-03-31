@@ -8,6 +8,9 @@ return array(
 	'CONNECT_TIMEOUT'=>10,
 	'NAV'=>array(
 		'首页'=>'/',
-		'添加QQ'=>'add.php',
-),
+		'添加QQ'=>'./add.php',
+		'所有QQ'=>'./all.php',
+	),
+	'JUMP_TIME'=>1,
+	'STYLE_LIST'=>'bootmetro-tiles,bootstrap,style',
 );

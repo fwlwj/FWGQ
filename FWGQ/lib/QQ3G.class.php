@@ -29,6 +29,11 @@ class QQ3G {
 			$curl = curl_init("http://pt.3g.qq.com/s?aid=nLogin3gqq");
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 			$Text = curl_exec($curl);
+			if ($Text===FALSE){
+				$this->error='无法连接3GQQ服务器';
+				return false;
+			}
+			curl_close($curl);
 			$posturld = $this->substring($Text,"马上登录 <go href=\"","\" method=\"post\">");
 			$postdata = "qq=".$qq_num."&pwd=".$qq_pwd."&bid_code=3GQQ&toQQchat=true&login_url=http%3A%2F%2Fpt.3g.qq.com%2Fs%3Faid%3DnLoginnew%26q_from%3D3GQQ&q_from=&modifySKey=0&loginType=1&aid=nLoginHandle&i_p_w=qq%7Cpwd%7C";
 			$curl = curl_init($posturld);
@@ -36,6 +41,11 @@ class QQ3G {
 			curl_setopt($curl, CURLOPT_POST, 1); 
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $postdata);
 			$Text = curl_exec($curl);
+			curl_close($curl);
+			if ($Text===FALSE){
+				$this->error='无法连接3GQQ服务器';
+				return false;
+			}
 			if (strstr($Text, "成功")) {
 				preg_match_all("/ontimer=\"(.*?)\">/", $Text, $matches);
 				if(!empty($matches[1][0])) {
@@ -142,7 +152,14 @@ class QQ3G {
 		}
 		function login($sid) {
 			$url = "http://pt.3g.qq.com/s?aid=nLogin3gqqbysid&3gqqsid=".$sid;
-			$contents = file_get_contents($url);
+			$contents = file_get_contents($url) or $this->curl_login($sid);
 			return true;
+		}
+		function curl_login($sid){
+			$curl = curl_init("http://pt.3g.qq.com/s?aid=nLogin3gqqbysid&3gqqsid=".$sid);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+			$contents = curl_exec($curl);
+			curl_close($curl);
+			return $contents;
 		}
 	}

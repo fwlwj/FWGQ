@@ -1,12 +1,25 @@
 <?php
+$__FW=array();
+$__FW['class']='FWGQ';
+$__FW['version']='V1.7.4';
+$__FW['FWGQ_version']='V2.3.1';
+defined ('FWGQ_ROOT') or define ('FWGQ_ROOT',dirname(dirname(__FILE__)).'/');
 class FWGQ{
 	protected static $lib_list=array(
 		'lib/Html.class.php'
 	);
 	public static $func_list=array(	
-		'fwrite','fsockopen','curl_init','curl_setopt','curl_exec','curl_close','file_get_contents',
+		/*
+			'fwrite','fsockopen',//tqq.tencent.com协议通信用 暂未支持
+		*/
+		'curl_init','curl_setopt','curl_exec','curl_close',/*访问3GQQ用 CURL支持库*/
+		'file_get_contents',/*访问3GQQ用 需要允许URL打开文件*/
 	);
 	public static function init(){
+		if (function_exists('header')){
+			header('FWPHP:FWPHP-'.$GLOBALS['__FW']['version']);
+			header('FWGQ:By Shixi On FWPHP '.$GLOBALS['__FW']['FWGQ_version']);
+		}
 		function __autoload($class){
 			if (is_file(FWGQ_ROOT.'/lib/'.$class.'.class.php')){
 				require FWGQ_ROOT.'/lib/'.$class.'.class.php';
@@ -64,7 +77,7 @@ class FWGQ{
 		else{
 			exit('日志目录不可写!');
 		}	
-		if (TRUE){
+		if ($type==='ERROR'){
 			self::halt ("[ {$type} ] {$msg}");
 		}
 	}
@@ -76,24 +89,38 @@ class FWGQ{
 		}
 		if (is_string ($name)){
 			$name=explode ('.',$name);
-			switch (count($name)){
-				case 1:
-					$route=&$_config[$name[0]];
-				break;
-				case 2:
-					$route=&$_config[$name[0]][$name[1]];
-				break;
-				case 3:
-					$route=&$_config[$name[0]][$name[1]][$name[2]];
-				break;
-				default:
-					self::log('暂不支持三维以上数组');
-				break;
-			}
 			if (is_null($value)){
+				switch (count($name)){
+					case 1:
+						$route=$_config[$name[0]];
+					break;
+					case 2:
+						$route=$_config[$name[0]][$name[1]];
+					break;
+					case 3:
+						$route=$_config[$name[0]][$name[1]][$name[2]];
+					break;
+					default:
+						self::log('暂不支持三维以上数组');
+					break;
+				}
 				return $route;
 			}
 			else{
+				switch (count($name)){
+					case 1:
+						$route=&$_config[$name[0]];
+					break;
+					case 2:
+						$route=&$_config[$name[0]][$name[1]];
+					break;
+					case 3:
+						$route=&$_config[$name[0]][$name[1]][$name[2]];
+					break;
+					default:
+						self::log('暂不支持三维以上数组');
+					break;
+				}
 				$route=$value;
 				return true;
 			}
@@ -115,7 +142,10 @@ class FWGQ{
 	public static function hsjcBool($name){
 		return function_exists($name);
 	}
-	public static function jump($type=1,$url='',$msg='执行成功',$time=2){
+	public static function jump($type=1,$url='',$msg='执行成功',$time=NULL){
+		if (is_null($time)){
+			$time=self::C('JUMP_TIME');
+		}
 		ob_clean();
 		require FWGQ_ROOT.'tpl/jump.php';
 		exit;
@@ -123,7 +153,7 @@ class FWGQ{
 	public static function halt($error){
 		ob_clean();
 		ob_start();
-		debug_print_backtrace();
+			debug_print_backtrace();
 		$trace=nl2br(ob_get_clean());
 		require FWGQ_ROOT.'/tpl/error.php';
 		exit;
@@ -154,6 +184,8 @@ class FWGQ{
 		return self::initClass($list[$method]);
 	}
 	public static function logout(){
+		unset($_SESSION['username']);
+		unset($_SESSION['password']);
 		session_destroy();
 	}
 	public static function add($qq,$password){
@@ -167,20 +199,16 @@ class FWGQ{
 		}
 		if ($class->getsid($qq,$password)) {
 			$db=self::initDB();
-			$num=$db->select('count','qq_sid','sid','qq='.$qq);
-			if ($num>=1){
-				$num=$db->select('count','qq_sid','sid','qq='.$qq.' AND username=\''.$_SESSION['user'].'\'');
-				if ($num===0){
-					return array('error'=>'QQ号已存在，且不属于您.');
-				}
-				return array('error'=>'QQ号已存在.');
+			$return=$db->count_by_qq_username($qq);
+			if ($return !==true){
+				return $return;
 			}
-			$in=$db->select('all_num','qq_sid','sid','username=\''.$_SESSION['username'].'\'');
-			$db->insert('qq_sid',array('\''.$_SESSION['username'].'\'',$qq,'\''.$class->sid().'\''));
+			//$in=$db->select('all_num','qq_sid','sid','username=\''.$_SESSION['username'].'\'');
+			$db->insert_qq_sid($qq,$class->sid());
 			return true;
 		} else {
 			$qq2err=$class->error();
-			if ($qq2err=='yzm') {
+			if ($qq2err==='yzm') {
 				$hidden=$class->yzm();
 				self::showYzmForm($hidden,$password);
 				exit;
@@ -214,12 +242,8 @@ all_success:{$success}
 	public static function onlineAll(){
 		@set_time_limit(0);
 		$GLOBALS['_time']=microtime(true);
-		$list=array();
 		$db=self::initDB();
-		$result=$db->select ('all_assoc','qq_sid','qq,sid');
-		foreach ($result as $one){
-			$list[$one['qq']]=$one['sid'];
-		}
+		$list=$db->get_all_qq_sid();
 		$GLOBALS['count']=count($list);
 		$class=self::initClass('QQ3G');
 		register_shutdown_function(
@@ -241,19 +265,51 @@ all_success:{$success}
 	}
 	public static function delete($sid){
 		$db=self::initDB();
-		$in=$db->select('count','qq_sid','sid','username=\''.$_SESSION['username'].'\' AND sid=\''.$sid.'\'');
-		if ($in>=1){
-			$db->delete('qq_sid','username=\''.$_SESSION['username'].'\' AND sid=\''.$sid.'\'');
-			return true;
-		}
+		return $db->delete_qq_sid($sid);
 	}
 	public static function getAllQQ(){
 		$db=self::initDB();
-		$in=$db->select('all','qq_sid','qq');
-		$qqlist=array();
-		foreach ($in as $one){
-			
-			echo '<p>'.$one['qq'].'<img src="http://wpa.qq.com/pa?p=2:'.$one['qq'].':41" /></p>';
+		$list=$db->get_all_qq();
+		foreach ($list as $qq){
+			echo '<p>'.$qq.'<img src="http://wpa.qq.com/pa?p=2:'.$qq.':41" /></p>';
 		}
+	}
+	public static function is_admin(){
+		if (!self::is_login()){
+			return false;
+		}
+		if (self::username()==='admin'){
+			return true;
+		}
+		return false;
+	}
+	public static function username($username=null,$password=null){
+		if ($username===null){
+			if (!self::is_login()){
+				return false;
+			}
+			return $_SESSION['username'];
+		}
+		else{
+			$_SESSION['username']=$username;
+			$_SESSION['password']=$password;
+		}
+	}
+	public static function get_user_sid_num($type=3){
+		$db=self::initDB();
+		switch ($type){
+			case 3:
+				$user_num=$db->get_user_num();
+				$qq_num=$db->get_qq_num();
+				return array('user'=>$user_num,'qq'=>$qq_num,);
+			break;
+			case 2:
+				return $db->get_user_num();
+			break;
+			case 1:
+				return $db->get_qq_num();
+			break;
+		}
+		
 	}
 }

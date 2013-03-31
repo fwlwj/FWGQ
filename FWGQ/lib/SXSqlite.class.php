@@ -110,8 +110,7 @@ class SXSqlite{
 		}elseif ($count===1){
 			$info=sqlite_fetch_array($result);
 			if ($info['username']===$username && $info['password']===$password){
-				$_SESSION['username']=$username;
-				$_SESSION['password']=$password;
+				FWGQ::username($username,$password);
 				return true;
 			}
 			else{
@@ -121,5 +120,50 @@ class SXSqlite{
 		else{
 			FWGQ::log("临界值错误,存在重名用户 [ {$username} ] [ {$count} ] 个,请检查.",'ERROR');
 		}
+	}
+	public function count_by_qq_username($qq){
+		$num=$this->select('count','qq_sid','sid','qq='.$qq);
+		if ($num>=1){
+			$num=$this->select('count','qq_sid','sid','qq='.$qq.' AND username=\''.$_SESSION['user'].'\'');
+			if ($num===0){
+				return array('error'=>'QQ号已存在，且不属于您.');
+			}
+			return array('error'=>'QQ号已存在.');
+		}
+		return true;
+	}
+	public function insert_qq_sid($qq,$sid){
+		$this->insert('qq_sid',array('\''.FWGQ::username().'\'',$qq,'\''.$sid.'\''));
+	}
+	public function get_all_qq_sid(){
+		$list=array();
+		$result=$this->select ('all_assoc','qq_sid','qq,sid');
+		foreach ($result as $one){
+			$list[$one['qq']]=$one['sid'];
+		}
+		return $list;
+	}
+	public function delete_qq_sid($sid){
+		$in=$this->select('count','qq_sid','sid','username=\''.FWGQ::username().'\' AND sid=\''.$sid.'\'');
+		if ($in>=1){
+			$this->delete('qq_sid','username=\''.FWGQ::username().'\' AND sid=\''.$sid.'\'');
+			return true;
+		}
+	}
+	public function get_all_qq(){
+		$in=$this->select('all','qq_sid','qq');
+		$qqlist=array();
+		foreach ($in as $one){
+			$qqlist[]=$one['qq'];
+		}
+		return $qqlist;
+	}
+	public function get_user_num(){
+		$in=$this->select ('array','qq','count(*)');
+		return $in[0];
+	}
+	public function get_qq_num(){
+		$in=$this->select ('array','qq_sid','count(*)');
+		return $in[0];
 	}
 }

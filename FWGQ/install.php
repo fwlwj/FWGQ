@@ -4,7 +4,6 @@ define ('FWGQ_ROOT',dirname(__FILE__).'/');
 require FWGQ_ROOT.'lib/FWGQ.class.php';
 if (is_file('./config/installed.log')){
 	FWGQ::send_http_status(403);
-	//unlink(__FILE__);
 	FWGQ::halt('非法运行install.php，如果需要重新安装，请删除 根目录/config/installed.log');
 }
 FWGQ::init();
@@ -21,7 +20,12 @@ switch ($step){
 			$func_a[$func]=FWGQ::hsjc($func);
 		}
 		$next=(count($func_exist)===$count);
-		$connect=@fsockopen('tqq.tencent.com',14000,$errno,$errstr,5)?true:false;
+		//$connect=@fsockopen('tqq.tencent.com',14000,$errno,$errstr,5)?true:false;
+		$curl = curl_init("http://pt.3g.qq.com/s?aid=nLogin3gqq");
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		$Text = curl_exec($curl);
+		curl_close($curl);
+		$connect=$Text===false?false:true;
 		$next=$next && $connect;
 		require FWGQ_ROOT.'tpl/install/step1.php';
 	break;
@@ -81,5 +85,8 @@ switch ($step){
 		require FWGQ_ROOT.'tpl/install/step3.php';
 		FWGQ::C(require FWGQ_ROOT.'config/config.php');
 		FWGQ::initDB()->build();
+		if (!is_writable(__FILE__)){
+			echo '请更名或删除本安装文件.';
+		}
 	break;
 }

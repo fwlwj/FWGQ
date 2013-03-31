@@ -22,13 +22,12 @@ if (FWGQ::is_login()){
 if ($_SERVER['REQUEST_METHOD']==='POST'){
 	$username=$_POST['username'];
 	$passwd=$_POST['password'];
-	$sqlite=new SXSqlite();
 	$login=FWGQ::login($username,$passwd);
 	if ($login===TRUE){
-		FWGQ::jump(1,'./','登陆成功',2);
+		FWGQ::jump(1,'./','登陆成功');
 	}
 	else{
-		FWGQ::jump(0,'',$login['msg'],2);
+		FWGQ::jump(0,'',$login['msg']);
 	}
 	exit;
 }

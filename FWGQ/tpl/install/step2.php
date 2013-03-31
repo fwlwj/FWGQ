@@ -10,10 +10,6 @@
 
 </head>
 <body style="height:1000px;">
-	<div class="FW_title">
-		<!--<img src="/Public/Img/logo.gif" style="display:inline;"/>-->
-		<h2 style="display:inline;" class="FW_header-title">时晞挂Q安装向导</h2>
-	</div>
 	<?php require dirname(__FILE__).'/nav.php';?>
 	<div class="wrapper">
 		<form method="post">
@@ -31,17 +27,21 @@
 					<tr>
 						<td>方式</td>
 						<td colspan="2">
+							<!--
 							<input type="radio" name="save_method" value="mysql" onchange="mysql_form_show(this)"/>Mysql
 							<input type="radio" name="save_method" value="file" onchange="mysql_form_show(false)"/>文件
+							-->
 							<input type="radio" name="save_method" value="sqlite" onchange="mysql_form_show(false)"/>Sqlite
 						</td>
 					</tr>
+					<!--
 						<tr class="mysql_info"><td>数据库服务器</td><td><input type="text" name="mysql_host" /></td></tr>
 						<tr class="mysql_info"><td>数据库端口</td><td><input type="text" name="mysql_port" /></td></tr>
 						<tr class="mysql_info"><td>数据库用户名</td><td><input type="text" name="mysql_user" /></td></tr>
 						<tr class="mysql_info"><td>数据库密码</td><td><input type="text" name="mysql_pwd" /></td></tr>
 						<tr class="mysql_info"><td>数据库</td><td><input type="text" name="mysql_db" /></td></tr>
 						<tr class="mysql_info"><td>数据库前缀</td><td><input type="text" name="mysql_pre" /></td></tr>
+					-->
 				</tbody>
 			</table>
 			<table class="table table-bordered background_white">
