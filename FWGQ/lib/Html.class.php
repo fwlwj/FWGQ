@@ -14,7 +14,8 @@ class Html{
 	}
 	public static function linkStyle($dir=null,$zip=FALSE){
 		if ($dir===null){
-			$dir=$GLOBALS['__FW']['class']::C('STYLE_LIST');
+			//$dir=$GLOBALS['__FW']['class']::C('STYLE_LIST');
+			$dir=call_user_func(array($GLOBALS['__FW']['class'],'C'),'STYLE_LIST');
 		}
 		$ext='.css';
 		$dir=explode(',',$dir);
