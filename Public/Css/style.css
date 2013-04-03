@@ -260,9 +260,13 @@ ul,ol{
 	text-align: left;
 	position: relative;
 }
-.FW-metro .text-header{
-	font-size: 28px !important;
-	line-height: 40px !important;
-	max-height:none !important;
-	font-family:"微软雅黑" !important;
+.progress.metro-style{
+	height:8px;
+	border-radius:0;
+}
+.progress.metro-style .bar{
+	background-color:#2C83EF;
+	background-image:none;
+	-webkit-box-shadow:none;
+	box-shadow:none;
 }
