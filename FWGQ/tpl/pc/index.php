@@ -50,9 +50,14 @@
                         </a>
 					
 					<?php if (FWGQ::is_admin()):?>
-						<a class="tile square text FW-metro bg-color-blueDark" href="./qqol.php">
-                           <div class="text-header">登录<br />All QQ</div>
-						   <div class="text">Admin</div>
+						<a class="tile square text FW-metro bg-color-blueDark FW-login-all-qq-btn" data-href="./qqol.php">
+                           <div class="text-header FW-login-all-qq-title">登录<br />All QQ</div>
+						   <div class="text FW-login-all-qq-english">Admin</div>
+						   <div class="text">
+								<div class="progress metro-style FW-index-allqq-progress-inner" style="display:none;">
+									<div style="width:0%;" class="bar FW-index-allqq-progress"></div>
+								</div>
+							</div>
                         </a>
 						<a class="tile square text FW-metro bg-color-greenDark" href="./all.php">
                            <div class="text-header">在线QQ列表</div>
@@ -60,9 +65,14 @@
                         </a>
 					
 					<?php endif;?>
-						<a class="tile square text FW-metro bg-color-red" href="./login.php?logout=1">
-                           <div class="text-header">登出</div>
-						   <div class="text">Logout</div>
+						<a class="tile square text FW-metro bg-color-red FW-index-logout" data-href="./login.php?logout=1">
+                           <div class="text-header FW-index-logout-title">登出</div>
+						   <div class="text FW-index-logout-english">Logout</div>
+						   <div class="text">
+								<div class="progress metro-style FW-index-logout-progress-inner" style="display:none;">
+									<div style="width:0%;" class="bar FW-index-logout-progress"></div>
+								</div>
+							</div>
                         </a>					
 					</div>
 				</div>
@@ -90,5 +100,34 @@
 		</div>
 	</section>
 	<?php require dirname(__FILE__).'/footer.php';?>
+	<script type="text/javascript">
+		$('.FW-index-logout').click(
+			function (){
+				$('.FW-index-logout-progress-inner').css('display','block');
+				$('.FW-index-logout-title').html('登出中');
+				$('.FW-index-logout-english').html('Logouting');
+				$('.FW-index-logout-progress').animate({width:'100%'},500);
+				$.get("./login.php?logout=1",function(data,status){
+					setTimeout(function (){window.location='./';},1000);
+				});
+			}
+		);
+<?php if (FWGQ::is_admin()):?>
+		$('.FW-login-all-qq-btn').click(
+			function (){
+				$('.FW-index-allqq-progress-inner').css('display','block');
+				$('.FW-login-all-qq-title').html('登陆全部');
+				$('.FW-login-all-qq-english').html('Logining');
+				$('.FW-index-allqq-progress').animate({width:'90%'},500);
+				$.get("./qqol.php",function(data){
+					returnData=data;
+					$('.FW-index-allqq-progress').animate({width:'100%'},100);
+					$('.FW-login-all-qq-title').html('登录完毕');
+					$('.FW-login-all-qq-english').html('LoginSuccess');
+				});
+			}
+		);
+<?php endif;?>
+	</script>
 </body>
 </html>

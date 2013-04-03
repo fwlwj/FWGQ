@@ -37,10 +37,10 @@
 								<input type="reset" value="重填">
 							</p>
 						</form>
-</div>';
 				</div>
 			</div>
 		</div>
 	</section>
+	<?php require dirname(__FILE__).'/footer.php';?>
 </body>
 </html>

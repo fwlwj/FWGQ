@@ -310,6 +310,17 @@ all_success:{$success}
 				return $db->get_qq_num();
 			break;
 		}
-		
+	}
+	public static function encode_password($password){
+		return md5(md5($password));
+	}
+	public static function Dump(){
+		$count=0;
+		foreach (func_get_args() as $value){
+			++$count;
+			echo '<pre>','FW - >DEBUG',"\r\n",'NUM:',$count;
+				var_dump($value);
+			echo '</pre>' ;
+		}
 	}
 }

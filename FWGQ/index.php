@@ -1,4 +1,5 @@
 <?php
+
 define ('FWGQ',1);
 session_start();
 define ('FWGQ_ROOT',dirname(__FILE__).'/');
@@ -9,3 +10,5 @@ if (!is_file('./config/config.php')){
 	exit ;
 }
 require FWGQ_ROOT.'tpl/pc/index.php';
+
+//new PDOSqlite();

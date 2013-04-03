@@ -25,18 +25,21 @@
 					<?php $times=0;foreach ($in as $one):++$times;?>
 						<a class="FW-QQ-list-one tile wide text <?php if ($times/2==ceil($times/2)){echo 'bg-color-green';}?>" href="#QQ_SID"  role="button" class="btn" data-toggle="modal" data-qq="<?php echo $one['qq'];?>" data-sid="<?php echo $one['sid'];?>">
 							<div class="text-header"><?php echo $one['qq'];?></div>
-							<div class="text">QQ</div>
+							<div class="text"></div>
+							<div class="text FW-QQ-online"><img src="http://wpa.qq.com/pa?p=2:<?php echo $one['qq']; ?>:41" /></div>
+							<br />
 							<div class="text">SID:<?php echo $one['sid'];?></div>
 						</a>
 					<?php endforeach;?>
 					<a class="FW-QQ-Add tile wide text bg-color-yellow" href="#QQ_Add" role="button" class="btn" data-toggle="modal">
 						<div class="text-header">添加</div>
-						<div class="text">QQ</div>
+						<div class="text-header">ＱＱ</div>
 					</a>
 				</div>
 			</div>
 		</div>
 	</section>
+	<?php require dirname(__FILE__).'/footer.php';?>
 	<div id="QQ_SID" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -45,6 +48,7 @@
 		<div class="modal-body">
 			<p><span>QQ号:</span><span id="FW-QQ-Num-inner"></span></p>
 			<p><span>SID:</span><span id="FW-QQ-SID-inner"></span></p>
+			<p><img src="http://wpa.qq.com/pa?p=2::41" id="FW-QQ-SID-online"/></p>
 		</div>
 		<div class="modal-footer">
 			<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
@@ -74,6 +78,7 @@
 			$('#FW-QQ-Num-inner').html($(this).attr('data-qq'));
 			$('#FW-QQ-SID-inner').html($(this).attr('data-sid'));
 			$('#FW-QQ-SID-delete').attr('href','./add.php?act=delete&sid='+ $(this).attr('data-sid'));
+			$('#FW-QQ-SID-online').attr('src','http://wpa.qq.com/pa?p=2:'+$(this).attr('data-qq')+':41');
 		});
 	});
 	</script>

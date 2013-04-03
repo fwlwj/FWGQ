@@ -31,5 +31,6 @@
 			</div>
 		</div>
 	</section>
+	<?php require dirname(__FILE__).'/footer.php';?>
 </body>
 </html>

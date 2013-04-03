@@ -56,7 +56,7 @@ class SXSqlite{
 			$this->link=sqlite_open($this->setting['FILE'],0666,$msg);
 			$this->query('CREATE TABLE qq (id INTEGER PRIMARY KEY, username TEXT, password TEXT, sid TEXT,jifen INTERGER)');
 			$this->query('CREATE TABLE qq_sid (username TEXT, qq INTERGER, sid TEXT)');
-			$this->query('INSERT INTO qq VALUES (1, \'admin\', \''.sqlite_escape_string(FWGQ::C('pwd')).'\',\'\',\'20\')');
+			$this->query('INSERT INTO qq VALUES (1, \'admin\', \''.sqlite_escape_string(FWGQ::encode_password(FWGQ::C('pwd'))).'\',\'\',\'20\')');
 			return TRUE;
 		}
 		return false;
@@ -109,8 +109,8 @@ class SXSqlite{
 			return array('id'=>2,'msg'=>'用户不存在。');
 		}elseif ($count===1){
 			$info=sqlite_fetch_array($result);
-			if ($info['username']===$username && $info['password']===$password){
-				FWGQ::username($username,$password);
+			if ($info['username']===$username && $info['password']===FWGQ::encode_password($password)){
+				FWGQ::username($username,FWGQ::encode_password($password));
 				return true;
 			}
 			else{

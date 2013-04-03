@@ -2,12 +2,15 @@
 define ('FWGQ',1);
 define ('FWGQ_ROOT',dirname(__FILE__).'/');
 require FWGQ_ROOT.'lib/FWGQ.class.php';
-if (is_file('./config/installed.log')){
+if (is_file('./config/installed.log') && !isset($_GET['FW_debug'])){
 	FWGQ::send_http_status(403);
 	FWGQ::halt('非法运行install.php，如果需要重新安装，请删除 根目录/config/installed.log');
 }
 FWGQ::init();
 $step=isset($_POST['step'])?intval($_POST['step']):0;
+if (isset($_GET['step'])){
+	$step=intval($_GET['step']);
+}
 switch ($step){
 	case 0:
 		require FWGQ_ROOT.'tpl/install/step0.php';
@@ -88,5 +91,8 @@ switch ($step){
 		if (!is_writable(__FILE__)){
 			echo '请更名或删除本安装文件.';
 		}
+	break;
+	case 4:
+		FWGQ::initDB()->build();
 	break;
 }
